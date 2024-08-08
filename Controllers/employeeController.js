@@ -8,12 +8,13 @@ dotenv.config();
 
 export const registerEmployee = async (req, res) => {
   try {
-    const { userName, email, password } = req.body;
+    const { userName, email, password, role } = req.body;
     const hashPassword = await bcryptjs.hash(password, 10);
     const newEmployee = new Employee({
       userName,
       email,
       password: hashPassword,
+      role
     });
     await newEmployee.save();
     res
@@ -44,7 +45,7 @@ export const loginEmployee = async (req, res) => {
       { expiresIn: "1h" }
     );
     userDetail.token = token;
-    res.status(200).json({ message: "User Logged In Successfully", token });
+    res.status(200).json({ message: "User Logged In Successfully", userDetail });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Login Failed Internal Server Error" });
@@ -106,3 +107,69 @@ export const resetPassword = async(req,res)=>{
   }
 }
 
+
+export const getAllEmployees = async(req,res)=>{
+  try {
+    const employees = await Employee.find()
+    res.status(200).json({message:"Emloyees Fetched Successfully",result:employees})
+  } catch (error) {
+    console.log(error)
+    res.status(500).josn({message:"Cannot Fetch Employees, Internal Server Error"})
+  }
+}
+
+
+export const getEmployeeToAssignRole = async(req,res)=>{
+  try {
+    const {id} = req.params
+    console.log(id)
+    if(!id){
+      return res.status(401).json({message:"Id is Missing"})
+    }
+    const employee = await Employee.findById(id)
+    if(!employee){
+      return res.status(401).json({message:"Employee Not Found"})
+    }
+    res.status(200).json({message:"Employee Fetched Successfully",result:employee})
+  } catch (error) {
+    console.log(error)
+    res.status(500).josn({message:"Cannot Fetch Employees, Internal Server Error"})
+  }
+}
+
+export const assignRole = async(req,res)=>{
+  try {
+    const updateEmployee = await Employee.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set:{
+          userName:req.body.userName,
+          email:req.body.email,
+          role:req.body.role,
+          department:req.body.department
+        }
+      },
+      {
+        new: true,
+      }
+    )
+    res.status(200).json({message:"Role and Department Assigned Successfully",result:updateEmployee})
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({message:"Cannot Assign Role or Department, Internal Server Error"})
+  }
+}
+
+export const deleteEmployee = async(req,res)=>{
+  try {
+    const {id} = req.params
+    const deleteEmp = await Employee.findByIdAndDelete(id)
+    if (!deleteEmp) {
+        return res.status(404).json({ message: "Employee Not Found" });
+    }
+    res.status(200).json({message:"Employee Deleted Successfully"})
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({message:"Cannot Delete Employee, Internal Server Error"})
+  }
+}
