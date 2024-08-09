@@ -75,15 +75,34 @@ export const loginEmployee = async (req, res) => {
 export const getEmployee = async (req, res) => {
   try {
     const employeeId = req.employee._id;
-    const employee = await Employee.findById(employeeId)
-    .populate('role','role')
-    .populate('department','departmentName');
+    const employee = await Employee.findById(employeeId);
     res.status(200).json({ message: "Authorized user", data: [employee] });
   } catch (error) {
     console.log(error);
     res
       .status(500)
       .json({ message: "Internal Server Error Failed to Fetch Employee" });
+  }
+};
+
+//Get Employee for Profile Page
+export const getEmployeeById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const employee = await Employee.findById(id)
+      .populate("role", "role responsibilities")
+      .populate("department", "departmentName");
+    if (!employee) {
+      return res.status(404).json({ message: "Employee Not Found" });
+    }
+    res
+      .status(200)
+      .json({ message: "Employee Fetched Successfully", result: employee });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ message: "Failed to Fetch Employee, Internal Server Error" });
   }
 };
 
@@ -134,13 +153,17 @@ export const resetPassword = async (req, res) => {
 export const getAllEmployees = async (req, res) => {
   try {
     const employees = await Employee.find()
-      .populate('role', 'role')       // Populate 'role' field with the 'role' field from Role schema
-      .populate('department', 'departmentName'); // Populate 'department' field with the 'departmentName' field from Department schema
+      .populate("role", "role") // Populate 'role' field with the 'role' field from Role schema
+      .populate("department", "departmentName"); // Populate 'department' field with the 'departmentName' field from Department schema
 
-    res.status(200).json({ message: "Employees Fetched Successfully", result: employees });
+    res
+      .status(200)
+      .json({ message: "Employees Fetched Successfully", result: employees });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ message: "Cannot Fetch Employees, Internal Server Error" });
+    res
+      .status(500)
+      .json({ message: "Cannot Fetch Employees, Internal Server Error" });
   }
 };
 
@@ -168,7 +191,9 @@ export const getEmployeeToAssignRole = async (req, res) => {
 export const assignRole = async (req, res) => {
   try {
     const { department } = req.body;
-    const updatedDepartment = await Department.findOne({departmentName:department})
+    const updatedDepartment = await Department.findOne({
+      departmentName: department,
+    });
     const updateEmployee = await Employee.findByIdAndUpdate(
       req.params.id,
       {
@@ -176,7 +201,7 @@ export const assignRole = async (req, res) => {
           userName: req.body.userName,
           email: req.body.email,
           role: req.body.role,
-          department:updatedDepartment._id,
+          department: updatedDepartment._id,
         },
       },
       {
@@ -208,5 +233,31 @@ export const deleteEmployee = async (req, res) => {
     res
       .status(500)
       .json({ message: "Cannot Delete Employee, Internal Server Error" });
+  }
+};
+
+export const updateEmployee = async (req, res) => {
+  try {
+    const updatedEmployee = await Employee.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set: {
+          userName: req.body.userName,
+          email: req.body.email,
+        },
+      },
+      { new: true }
+    );
+    res
+      .status(200)
+      .json({
+        message: "Employee Updated Successfully",
+        result: updatedEmployee,
+      });
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .json({ message: "Failed to Update Employee, Internal Server Error" });
   }
 };
