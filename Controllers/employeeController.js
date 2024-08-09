@@ -75,7 +75,9 @@ export const loginEmployee = async (req, res) => {
 export const getEmployee = async (req, res) => {
   try {
     const employeeId = req.employee._id;
-    const employee = await Employee.findById(employeeId);
+    const employee = await Employee.findById(employeeId)
+    .populate('role','role')
+    .populate('department','departmentName');
     res.status(200).json({ message: "Authorized user", data: [employee] });
   } catch (error) {
     console.log(error);
@@ -131,15 +133,14 @@ export const resetPassword = async (req, res) => {
 
 export const getAllEmployees = async (req, res) => {
   try {
-    const employees = await Employee.find();
-    res
-      .status(200)
-      .json({ message: "Emloyees Fetched Successfully", result: employees });
+    const employees = await Employee.find()
+      .populate('role', 'role')       // Populate 'role' field with the 'role' field from Role schema
+      .populate('department', 'departmentName'); // Populate 'department' field with the 'departmentName' field from Department schema
+
+    res.status(200).json({ message: "Employees Fetched Successfully", result: employees });
   } catch (error) {
     console.log(error);
-    res
-      .status(500)
-      .josn({ message: "Cannot Fetch Employees, Internal Server Error" });
+    res.status(500).json({ message: "Cannot Fetch Employees, Internal Server Error" });
   }
 };
 
@@ -166,6 +167,8 @@ export const getEmployeeToAssignRole = async (req, res) => {
 
 export const assignRole = async (req, res) => {
   try {
+    const { department } = req.body;
+    const updatedDepartment = await Department.findOne({departmentName:department})
     const updateEmployee = await Employee.findByIdAndUpdate(
       req.params.id,
       {
@@ -173,7 +176,7 @@ export const assignRole = async (req, res) => {
           userName: req.body.userName,
           email: req.body.email,
           role: req.body.role,
-          department: req.body.department,
+          department:updatedDepartment._id,
         },
       },
       {
