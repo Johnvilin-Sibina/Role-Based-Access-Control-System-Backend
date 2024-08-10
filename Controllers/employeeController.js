@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import { sendLink } from "../Services/Nodemailer.js";
 import Role from "../Models/rolesSchema.js";
 import Department from "../Models/departmentSchema.js";
+import RoleHistory from "../Models/roleHistorySchema.js";
 
 dotenv.config();
 
@@ -173,7 +174,7 @@ export const getEmployeeToAssignRole = async (req, res) => {
     if (!id) {
       return res.status(404).json({ message: "Id is Missing" });
     }
-    const employee = await Employee.findById(id);
+    const employee = await Employee.findById(id).populate('role','role').populate('department','departmentName');
     if (!employee) {
       return res.status(404).json({ message: "Employee Not Found" });
     }
@@ -187,27 +188,63 @@ export const getEmployeeToAssignRole = async (req, res) => {
       .josn({ message: "Cannot Fetch Employees, Internal Server Error" });
   }
 };
-
+     
 export const assignRole = async (req, res) => {
   try {
-    const { department } = req.body;
-    const updatedDepartment = await Department.findOne({
-      departmentName: department,
-    });
+    const { id } = req.params;
+    const { role, department, userName, email } = req.body;
+
+    // Find the Role and Department by their names
+    const updatedRole = await Role.findOne({ role });
+    const updatedDepartment = await Department.findOne({ departmentName: department });
+
+    // Check if Role and Department are valid
+    if (!updatedRole || !updatedDepartment) {
+      return res.status(400).json({
+        message: "Invalid Role or Department",
+      });
+    }
+
+    // Find the employee and old role
+    const employee = await Employee.findById(id);
+    if (!employee) {
+      return res.status(404).json({
+        message: "Employee not found",
+      });
+    }
+
+    const oldRoleId = employee.role;
+
+    // Find the old role for logging purposes
+    const oldRole = await Role.findById(oldRoleId);
+    if (!oldRole) {
+      return res.status(404).json({
+        message: "Old Role not found",
+      });
+    }
+
+    // Update the employee with new role and department
     const updateEmployee = await Employee.findByIdAndUpdate(
-      req.params.id,
+      id,
       {
         $set: {
-          userName: req.body.userName,
-          email: req.body.email,
-          role: req.body.role,
+          userName: userName,
+          email: email,
+          role: updatedRole._id,
           department: updatedDepartment._id,
         },
       },
-      {
-        new: true,
-      }
+      { new: true }
     );
+
+    // Log role change
+    const roleHistory = new RoleHistory({
+      employee: updateEmployee._id,
+      oldRole: oldRoleId,
+      newRole: updatedRole._id,
+    });
+    await roleHistory.save();
+
     res.status(200).json({
       message: "Role and Department Assigned Successfully",
       result: updateEmployee,
@@ -219,6 +256,7 @@ export const assignRole = async (req, res) => {
     });
   }
 };
+
 
 export const deleteEmployee = async (req, res) => {
   try {
