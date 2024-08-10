@@ -1,4 +1,3 @@
-// roleHistorySchema.js
 import mongoose from "mongoose";
 
 const roleHistorySchema = new mongoose.Schema(
