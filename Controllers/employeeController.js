@@ -204,6 +204,7 @@ export const assignRole = async (req, res) => {
         message: "Invalid Role or Department",
       });
     }
+    
 
     // Find the employee and old role
     const employee = await Employee.findById(id);
@@ -222,7 +223,12 @@ export const assignRole = async (req, res) => {
         message: "Old Role not found",
       });
     }
-
+    //Check whether the old and current role are same
+    if(updatedRole.role===oldRole.role){
+      return res.status(400).json({
+        message: "Old Role and Current Role are Same",
+      });
+    }
     // Update the employee with new role and department
     const updateEmployee = await Employee.findByIdAndUpdate(
       id,
