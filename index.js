@@ -5,7 +5,8 @@ import connectDB from "./Database/config.js";
 import employeeRouter from "./Routers/employeeRouter.js";
 import departmentRouter from "./Routers/departmentRouter.js";
 import roleRouter from "./Routers/roleRouter.js";
-import reportRouter from "./Routers/reportRouter.js"
+import reportRouter from "./Routers/reportRouter.js";
+import authRouter from "./Routers/authRouter.js"
 
 dotenv.config();
 const app = express();
@@ -29,6 +30,7 @@ app.get("/", (req, res) => {
 
 //API Routes
 app.use('/api',employeeRouter)
+app.use('/api',authRouter)
 app.use('/api/department',departmentRouter)
 app.use('/api/role',roleRouter)
 app.use('/api/report',reportRouter)

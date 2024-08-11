@@ -1,6 +1,8 @@
 import PDFDocument from 'pdfkit';
 import fs from 'fs';
 
+//Function to generate and download role promotion report pdf 
+//using a third party package - pdfkit
 export const generateRolePromotionPDF = (roleHistories, res) => {
     const doc = new PDFDocument();
     const fileName = 'Role_Promotion_Report.pdf';
@@ -29,6 +31,8 @@ export const generateRolePromotionPDF = (roleHistories, res) => {
     });
 };
 
+//Function to generate and download work period report pdf 
+//using a third party package - pdfkit
 export const generateEmployeeWorkPeriodPDF = (reports, res) => {
     const doc = new PDFDocument();
     const fileName = 'Employee_Work_Period_Report.pdf';

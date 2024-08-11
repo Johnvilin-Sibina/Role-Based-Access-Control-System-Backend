@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+//Function to create a new role
 export const createRole = async (req, res) => {
   try {
     const { role, responsibilities } = req.body;
@@ -22,6 +23,7 @@ export const createRole = async (req, res) => {
   }
 };
 
+//Function to fetch all the roles
 export const getRoles = async (req, res) => {
   try {
     const roles = await Role.find();
@@ -36,6 +38,7 @@ export const getRoles = async (req, res) => {
   }
 };
 
+//Function to fetch a department by id
 export const getRoleById = async(req,res)=>{
     try {
        const {id} = req.params 
@@ -53,6 +56,7 @@ export const getRoleById = async(req,res)=>{
     }
 }
 
+//Function tp update the details of a role
 export const updateRole = async (req, res) => {
   try {
     const updatedRole = await Role.findByIdAndUpdate(req.params.id, {
@@ -72,6 +76,7 @@ export const updateRole = async (req, res) => {
   }
 };
 
+//Function to delete a role
 export const deleteRole = async (req, res) => {
   try {
     const { id } = req.params;

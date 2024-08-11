@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+//Function to send mail to reset password using a third party package Node Mailer
 export const sendLink = async (email, token, employeeId) => {
   const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",

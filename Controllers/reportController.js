@@ -2,6 +2,7 @@ import RoleHistory from "../Models/roleHistorySchema.js";
 import Employee from "../Models/employeeSchema.js";
 import { generateRolePromotionPDF, generateEmployeeWorkPeriodPDF } from "../Services/pdfGenerator.js";
 
+//Function to get the promotion details of the employees
 export const getRolePromotionReport = async (req, res) => {
   try {
     const roleHistories = await RoleHistory.find()
@@ -20,6 +21,7 @@ export const getRolePromotionReport = async (req, res) => {
   }
 };
 
+//Function to get the working period of the employees
 export const getEmployeeWorkPeriodReport = async (req, res) => {
   try {
     const employees = await Employee.find().populate('role', 'role').populate('department', 'departmentName');
@@ -44,7 +46,7 @@ export const getEmployeeWorkPeriodReport = async (req, res) => {
   }
 };
 
-// Route handlers for generating PDFs
+// Function to generate PDFs on promotion details of an employee
 export const handleGenerateRolePromotionPDF = async (req, res) => {
   try {
     const {id} = req.params
@@ -60,6 +62,7 @@ export const handleGenerateRolePromotionPDF = async (req, res) => {
   }
 };
 
+// Function to generate PDFs on working period details of an employee
 export const handleGenerateEmployeeWorkPeriodPDF = async (req, res) => {
   try {
     const {id} = req.params;
