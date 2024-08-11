@@ -28,7 +28,7 @@ export const getEmployeeWorkPeriodReport = async (req, res) => {
       return {
         _id:employee._id,
         userName: employee.userName,
-        department: employee.department.departmentName,
+        department: employee.department?employee.department.departmentName : "Not Yet Assigned",
         role: employee.role.role,
         dateOfJoining: employee.dateOfJoining,
         workPeriod: Math.floor((Date.now() - new Date(employee.dateOfJoining)) / (1000 * 60 * 60 * 24 * 30)), // Convert to months
