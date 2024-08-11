@@ -14,7 +14,6 @@ const authMiddleware = async(req,res,next)=>{
     try {
         const decode = jwt.verify(token,process.env.JWT_SECRET_KEY)
         req.employee = decode
-       //console.log(req.user)
         const employee = await Employee.findById(req.employee._id)
         if(!employee){
             return res.status(401).json({message:"Access Denied Not a Valid User"})

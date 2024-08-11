@@ -111,7 +111,6 @@ export const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
     const employee = await Employee.findOne({ email });
-    console.log(employee);
     const employeeId = employee._id;
     if (!employee) {
       return res.status(401).json({ message: "Employee Not Found" });
@@ -120,6 +119,7 @@ export const forgotPassword = async (req, res) => {
       expiresIn: "1d",
     });
     await sendLink(email, token, employeeId);
+    res.status(200).json({message:"Mail Sent Successfully"})
   } catch (error) {
     console.log(error);
     res

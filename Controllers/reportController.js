@@ -23,7 +23,6 @@ export const getRolePromotionReport = async (req, res) => {
 export const getEmployeeWorkPeriodReport = async (req, res) => {
   try {
     const employees = await Employee.find().populate('role', 'role').populate('department', 'departmentName');
-    console.log(employees)
     const reports = employees.map(employee => {
       return {
         _id:employee._id,
@@ -65,7 +64,6 @@ export const handleGenerateEmployeeWorkPeriodPDF = async (req, res) => {
   try {
     const {id} = req.params;
     const employees = await Employee.find({_id:id}).populate('role', 'role').populate('department', 'departmentName');
-    console.log(employees)
     const reports = employees.map(employee => {
       return {
         _id: employee._id,

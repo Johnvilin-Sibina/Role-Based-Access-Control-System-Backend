@@ -43,7 +43,6 @@ export const getRoleById = async(req,res)=>{
         return res.status(404).json({ message: "Id is Missing" });
       }
        const role = await Role.findById(id)
-       console.log(role)
        if(!role){
         return res.status(404).json({message:"Role Not Found"})
        }
