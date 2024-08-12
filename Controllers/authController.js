@@ -3,6 +3,8 @@ import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import { sendLink } from "../Services/Nodemailer.js";
+import Role from "../Models/rolesSchema.js"
+
 
 dotenv.config();
 
