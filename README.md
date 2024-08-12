@@ -101,5 +101,5 @@
 <p><b>Method: </b>GET</p>
 <h2>API Documentation</h2>
 <p>To know more about the api end points ckeck the api documentation given below.</p>
-<a href="https://documenter.getpostman.com/view/33763328/2sA3s3JWzm">API Documentation</a>
+<a href="https://documenter.getpostman.com/view/33763328/2sA3s3JWzm" target="_blank">API Documentation</a>
 
