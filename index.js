@@ -35,6 +35,6 @@ app.use('/api/department',departmentRouter)
 app.use('/api/role',roleRouter)
 app.use('/api/report',reportRouter)
 
-app.listen(process.env.port,()=>{
+app.listen(process.env.PORT,()=>{
     console.log("App is listening on the port")
 });
