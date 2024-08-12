@@ -161,7 +161,8 @@ export const deleteEmployee = async (req, res) => {
   try {
     const { id } = req.params;
     const deleteEmp = await Employee.findByIdAndDelete(id);
-    const promotion = await RoleHistory.findByIdAndDelete({employee:id})
+    const deletePromotionDetail = await RoleHistory.deleteOne({employee:id})
+    
     if (!deleteEmp) {
       return res.status(404).json({ message: "Employee Not Found" });
     }
