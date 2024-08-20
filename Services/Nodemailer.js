@@ -20,7 +20,7 @@ export const sendLink = async (email, token, employeeId) => {
         from: process.env.PASSMAIL,
         to: email,
         subject: "Reset Password",
-        text: `http://localhost:5173/resetpw/${employeeId}/${token}`,
+        text: `https://beamish-buttercream-3f70ca.netlify.app/resetpw/${employeeId}/${token}`,
         html: `<p>A request is made to reset your password. If it is made by you click the following link to proceed: <a href="http://localhost:5173/resetpw/${employeeId}/${token}">Reset Password</a>. If it is not done by you, ignore the mail.</p>`,
       });
       console.log("Mail Sent Successfully");
